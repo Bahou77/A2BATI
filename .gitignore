@@ -2,6 +2,7 @@
 
 # Compiled output
 /dist
+/public/photos/gallery.json
 /tmp
 /out-tsc
 /bazel-out

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -11,15 +11,24 @@ interface ProjectRequest {
   details: string;
 }
 
+interface GalleryPhoto {
+  title: string;
+  src: string;
+}
+
 @Component({
   selector: 'app-root',
   imports: [FormsModule, ButtonModule, CardModule],
   templateUrl: './app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   menuOpen = false;
+  showPhoneNumber = false;
   formStatus: 'idle' | 'submitting' | 'success' | 'error' = 'idle';
   formErrorMessage = 'L’envoi n’a pas abouti. Réessayez ou contactez-nous par téléphone ou par e-mail.';
+  galleryPhotos: GalleryPhoto[] = [];
+  galleryStatus: 'loading' | 'loaded' | 'error' = 'loading';
+  selectedPhoto: GalleryPhoto | null = null;
 
   request: ProjectRequest = {
     name: '',
@@ -83,6 +92,10 @@ export class AppComponent {
     'Agen'
   ];
 
+  ngOnInit(): void {
+    void this.loadGallery();
+  }
+
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
   }
@@ -91,8 +104,58 @@ export class AppComponent {
     this.menuOpen = false;
   }
 
+  togglePhoneNumber(): void {
+    this.showPhoneNumber = !this.showPhoneNumber;
+  }
+
   imageUrl(photoId: string, width = 900): string {
     return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=${width}&q=85`;
+  }
+
+  async loadGallery(): Promise<void> {
+    try {
+      const response = await fetch('/photos/gallery.json');
+      if (!response.ok) {
+        throw new Error(`Gallery manifest request failed with status ${response.status}.`);
+      }
+
+      const photos: unknown = await response.json();
+      if (!Array.isArray(photos) || !photos.every(this.isGalleryPhoto)) {
+        throw new Error('Gallery manifest has an invalid format.');
+      }
+
+      this.galleryPhotos = photos;
+      this.galleryStatus = 'loaded';
+    } catch (error) {
+      console.error('Unable to load the project gallery.', error);
+      this.galleryStatus = 'error';
+    }
+  }
+
+  openPhoto(photo: GalleryPhoto): void {
+    this.selectedPhoto = photo;
+  }
+
+  closePhoto(event?: MouseEvent): void {
+    if (!event || event.target === event.currentTarget) {
+      this.selectedPhoto = null;
+    }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onDocumentKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      this.selectedPhoto = null;
+    }
+  }
+
+  private isGalleryPhoto(photo: unknown): photo is GalleryPhoto {
+    if (typeof photo !== 'object' || photo === null) {
+      return false;
+    }
+
+    const candidate = photo as Record<string, unknown>;
+    return typeof candidate['title'] === 'string' && typeof candidate['src'] === 'string';
   }
 
   async submitRequest(): Promise<void> {

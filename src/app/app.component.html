@@ -17,7 +17,7 @@
 
     <nav class="main-nav" [class.is-open]="menuOpen" aria-label="Navigation principale">
       <a href="#prestations" (click)="closeMenu()">Prestations</a>
-      <a href="#realisations" (click)="closeMenu()">Réalisations</a>
+      <a href="#galerie" (click)="closeMenu()">Réalisations</a>
       <a href="#avis" (click)="closeMenu()">Avis</a>
       <a pButton class="nav-cta" href="#contact" (click)="closeMenu()">Parler de mon projet <span>↗</span></a>
     </nav>
@@ -34,7 +34,15 @@
         rénovation, extension et aménagement, de l’étude jusqu’à la réception des travaux.
       </p>
       <div class="hero-actions">
-        <a pButton class="button button-orange" href="tel:+33663113751">Appeler <span>↗</span></a>
+        <button
+          pButton
+          class="button button-orange"
+          type="button"
+          [attr.aria-expanded]="showPhoneNumber"
+          (click)="togglePhoneNumber()"
+        >
+          {{ showPhoneNumber ? '06 63 11 37 51' : 'Appeler' }} <span>↗</span>
+        </button>
         <a pButton class="button button-light" href="https://wa.me/33663113751" target="_blank" rel="noopener noreferrer">
           <span class="whatsapp-icon">◉</span> WhatsApp
         </a>
@@ -169,17 +177,55 @@
     </div>
   </section>
 
-  <section class="renovation-gallery section-pad" aria-labelledby="renovation-heading">
-    <div class="renovation-gallery-title">
-      <p class="eyebrow">Notre approche</p>
-      <h2 id="renovation-heading">L’attention portée<br>à chaque détail.</h2>
+  <section class="project-gallery section-pad" id="galerie" aria-labelledby="gallery-heading">
+    <div class="gallery-heading">
+      <div class="renovation-gallery-title">
+        <p class="eyebrow eyebrow-light">Galerie de réalisations</p>
+        <h2 id="gallery-heading">Des projets concrets.<br>Des réalisations durables.</h2>
+      </div>
+      <p class="gallery-intro">Chaque chantier raconte une histoire. Découvrez les projets A2BATI, de la première étape aux finitions.</p>
     </div>
-    <div class="gallery-images">
-      <img [src]="imageUrl('photo-1600210492486-724fe5c67fb0', 750)" alt="Espace de vie rénové" loading="lazy">
-      <img [src]="imageUrl('photo-1600607687920-4e2a09cf159d', 750)" alt="Aménagement intérieur contemporain" loading="lazy">
-      <span class="gallery-index">A2 / 24</span>
-    </div>
+    @if (galleryStatus === 'loading') {
+      <p class="gallery-message" role="status">Chargement des réalisations…</p>
+    } @else if (galleryStatus === 'error') {
+      <p class="gallery-message gallery-error" role="alert">La galerie n’a pas pu être chargée. Réessayez après avoir actualisé la page.</p>
+    } @else if (galleryPhotos.length === 0) {
+      <div class="gallery-empty">
+        <span class="gallery-empty-icon">✳</span>
+        <div>
+          <h3>La galerie se construit ici.</h3>
+          <p>Ajoutez vos photos dans <code>public/photos/</code>. Elles apparaîtront automatiquement après le prochain démarrage ou déploiement.</p>
+          <span class="gallery-formats">JPG · PNG · WEBP · AVIF · GIF</span>
+        </div>
+      </div>
+    } @else {
+      <div class="gallery-grid">
+        @for (photo of galleryPhotos; track photo.src; let i = $index) {
+          <button
+            class="gallery-card"
+            [class.gallery-card-featured]="galleryPhotos.length > 2 && i % 5 === 0"
+            type="button"
+            [attr.aria-label]="'Afficher la photo : ' + photo.title"
+            (click)="openPhoto(photo)"
+          >
+            <img [src]="photo.src" [alt]="photo.title" loading="lazy">
+            <span class="gallery-card-caption"><span>{{ photo.title }}</span><i>↗</i></span>
+          </button>
+        }
+      </div>
+      <p class="gallery-count">{{ galleryPhotos.length }} réalisation{{ galleryPhotos.length === 1 ? '' : 's' }} <span>— Cliquez sur une photo pour l’agrandir</span></p>
+    }
   </section>
+
+  @if (selectedPhoto; as photo) {
+    <div class="gallery-lightbox" role="dialog" aria-modal="true" [attr.aria-label]="photo.title" (click)="closePhoto($event)">
+      <button class="lightbox-close" type="button" aria-label="Fermer la photo" (click)="selectedPhoto = null">×</button>
+      <figure class="lightbox-figure">
+        <img [src]="photo.src" [alt]="photo.title">
+        <figcaption>{{ photo.title }}</figcaption>
+      </figure>
+    </div>
+  }
 
   <section class="service-area section-pad">
     <div class="area-copy">
