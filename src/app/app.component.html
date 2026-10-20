@@ -200,22 +200,26 @@
       </div>
     } @else {
       <div class="gallery-grid">
-        @for (photo of galleryPhotos; track photo.src; let i = $index) {
-          <button
-            class="gallery-card"
-            [class.gallery-card-featured]="galleryPhotos.length > 2 && i % 5 === 0"
-            type="button"
-            [attr.aria-label]="'Agrandir la photo : ' + (photo.title || 'réalisation A2BATI')"
-            (click)="openPhoto(photo)"
-          >
-            <img [src]="photo.src" [alt]="photo.title || 'Réalisation A2BATI'" loading="lazy">
-            @if (photo.title) {
-              <span class="gallery-card-caption"><span>{{ photo.title }}</span><i>↗</i></span>
-            }
-          </button>
+        @for (photo of galleryPhotos; track photo.src) {
+          <p-card styleClass="gallery-card">
+            <button
+              class="gallery-card-button"
+              type="button"
+              [attr.aria-label]="'Agrandir la photo : ' + (photo.title || 'réalisation A2BATI')"
+              (click)="openPhoto(photo)"
+            >
+              <img [src]="photo.src" [alt]="photo.title || 'Réalisation A2BATI'" loading="lazy">
+              @if (photo.title) {
+                <span class="gallery-card-caption"><span>{{ photo.title }}</span><i>↗</i></span>
+              }
+            </button>
+          </p-card>
         }
       </div>
-      <p class="gallery-count">{{ galleryPhotos.length }} réalisation{{ galleryPhotos.length === 1 ? '' : 's' }} <span>— Cliquez sur une photo pour l’agrandir</span></p>
+      <p class="gallery-count">
+        {{ galleryPhotos.length }} réalisation{{ galleryPhotos.length === 1 ? '' : 's' }}
+        <span>— Cliquez sur une photo pour l’agrandir. La sélection change toutes les heures.</span>
+      </p>
     }
   </section>
 

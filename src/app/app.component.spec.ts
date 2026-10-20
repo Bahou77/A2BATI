@@ -1,5 +1,25 @@
 import { TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
+import { AppComponent, pickHourlyPhotos } from './app.component';
+
+describe('pickHourlyPhotos', () => {
+  const photos = Array.from({ length: 15 }, (_, i) => i);
+
+  it('returns 6 distinct photos and is stable within the same hour', () => {
+    const first = pickHourlyPhotos(photos, 500000);
+
+    expect(first.length).toBe(6);
+    expect(new Set(first).size).toBe(6);
+    expect(pickHourlyPhotos(photos, 500000)).toEqual(first);
+  });
+
+  it('changes the selection from one hour to the next', () => {
+    expect(pickHourlyPhotos(photos, 500001)).not.toEqual(pickHourlyPhotos(photos, 500000));
+  });
+
+  it('returns every photo when there are fewer than 6', () => {
+    expect(pickHourlyPhotos([1, 2, 3], 500000).length).toBe(3);
+  });
+});
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -24,7 +44,7 @@ describe('AppComponent', () => {
     app.galleryPhotos = [{ title: 'Cuisine rénovée', src: '/gallery/thumbs/cuisine.webp', full: '/gallery/full/cuisine.webp' }];
     fixture.detectChanges();
 
-    const photoButton = fixture.nativeElement.querySelector('.gallery-card') as HTMLButtonElement;
+    const photoButton = fixture.nativeElement.querySelector('.gallery-card-button') as HTMLButtonElement;
     photoButton.click();
     fixture.detectChanges();
 

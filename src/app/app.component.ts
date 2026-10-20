@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -17,12 +17,35 @@ interface GalleryPhoto {
   full: string;
 }
 
+const GALLERY_SIZE = 6;
+const ONE_HOUR_MS = 60 * 60 * 1000;
+
+// Tirage déterministe : tous les visiteurs voient les mêmes photos pendant une heure.
+export function pickHourlyPhotos<T>(photos: T[], hourIndex: number, count = GALLERY_SIZE): T[] {
+  let seed = hourIndex >>> 0;
+  const random = () => {
+    seed = (seed + 0x6d2b79f5) >>> 0;
+    let t = seed;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+
+  const shuffled = [...photos];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  return shuffled.slice(0, count);
+}
+
 @Component({
   selector: 'app-root',
   imports: [FormsModule, ButtonModule, CardModule],
   templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   menuOpen = false;
   showPhoneNumber = false;
   formStatus: 'idle' | 'submitting' | 'success' | 'error' = 'idle';
@@ -30,6 +53,8 @@ export class AppComponent implements OnInit {
   galleryPhotos: GalleryPhoto[] = [];
   galleryStatus: 'loading' | 'loaded' | 'error' = 'loading';
   selectedPhoto: GalleryPhoto | null = null;
+  private allPhotos: GalleryPhoto[] = [];
+  private galleryTimer?: ReturnType<typeof setTimeout>;
 
   request: ProjectRequest = {
     name: '',
@@ -97,6 +122,10 @@ export class AppComponent implements OnInit {
     void this.loadGallery();
   }
 
+  ngOnDestroy(): void {
+    clearTimeout(this.galleryTimer);
+  }
+
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
   }
@@ -125,12 +154,22 @@ export class AppComponent implements OnInit {
         throw new Error('Gallery manifest has an invalid format.');
       }
 
-      this.galleryPhotos = photos;
+      this.allPhotos = photos;
       this.galleryStatus = 'loaded';
+      this.refreshGallery();
     } catch (error) {
       console.error('Unable to load the project gallery.', error);
       this.galleryStatus = 'error';
     }
+  }
+
+  private refreshGallery(): void {
+    const now = Date.now();
+    this.galleryPhotos = pickHourlyPhotos(this.allPhotos, Math.floor(now / ONE_HOUR_MS));
+
+    clearTimeout(this.galleryTimer);
+    const msUntilNextHour = ONE_HOUR_MS - (now % ONE_HOUR_MS);
+    this.galleryTimer = setTimeout(() => this.refreshGallery(), msUntilNextHour + 1000);
   }
 
   openPhoto(photo: GalleryPhoto): void {

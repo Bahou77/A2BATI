@@ -106,7 +106,7 @@ app-root {
 
 .hero {
   position: relative;
-  min-height: 680px;
+  min-height: max(680px, calc(100svh - 76px));
   display: grid;
   grid-template-columns: 0.94fr 1.06fr;
   align-items: stretch;
@@ -118,6 +118,7 @@ app-root {
 .hero-copy {
   position: relative;
   z-index: 1;
+  container-type: inline-size;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -149,7 +150,7 @@ app-root {
 
 .hero h1 {
   margin: 0;
-  font-size: clamp(50px, 6.3vw, 88px);
+  font-size: min(88px, 18cqi);
   font-weight: 740;
   letter-spacing: -0.075em;
   line-height: 0.99;
@@ -158,6 +159,7 @@ app-root {
 .hero h1 em {
   color: var(--orange);
   font-style: normal;
+  white-space: nowrap;
 }
 
 .hero-intro,
@@ -960,36 +962,40 @@ app-root {
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  grid-auto-rows: clamp(150px, 17vw, 245px);
   gap: 14px;
 }
 
-.gallery-card {
+.gallery-card.p-card {
   position: relative;
   min-width: 0;
-  min-height: 0;
   overflow: hidden;
-  padding: 0;
+  aspect-ratio: 4 / 3;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   background: #252c2f;
+  box-shadow: none;
+  animation: gallery-fade 600ms ease both;
+}
+
+.gallery-card .p-card-body,
+.gallery-card .p-card-content {
+  height: 100%;
+  padding: 0;
+}
+
+.gallery-card-button {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  background: none;
   cursor: zoom-in;
 }
 
-.gallery-card-featured {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
-.gallery-card::after {
-  position: absolute;
-  inset: 40% 0 0;
-  background: linear-gradient(0deg, rgba(17, 22, 24, 0.78), transparent);
-  content: "";
-  pointer-events: none;
-}
-
-.gallery-card img {
+.gallery-card-button img {
   width: 100%;
   height: 100%;
   display: block;
@@ -997,27 +1003,29 @@ app-root {
   transition: transform 350ms ease;
 }
 
-.gallery-card:hover img,
-.gallery-card:focus-visible img {
+.gallery-card-button:hover img,
+.gallery-card-button:focus-visible img {
   transform: scale(1.045);
 }
 
-.gallery-card:focus-visible {
+.gallery-card-button:focus-visible {
   outline: 2px solid #ff9a19;
-  outline-offset: 3px;
+  outline-offset: -2px;
 }
 
 .gallery-card-caption {
   position: absolute;
   z-index: 1;
-  right: 18px;
-  bottom: 16px;
-  left: 18px;
+  right: 0;
+  bottom: 0;
+  left: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  padding: 42px 18px 16px;
   color: #fff;
+  background: linear-gradient(0deg, rgba(17, 22, 24, 0.78), transparent);
   font-size: 11px;
   font-weight: 650;
   text-align: left;
@@ -1027,6 +1035,17 @@ app-root {
   color: #ff9a19;
   font-size: 14px;
   font-style: normal;
+}
+
+@keyframes gallery-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .gallery-count {
@@ -1470,7 +1489,7 @@ app-root {
   }
 
   .hero {
-    min-height: 600px;
+    min-height: max(600px, calc(100svh - 76px));
     padding-left: 5vw;
   }
 
@@ -1574,7 +1593,7 @@ app-root {
   .hero {
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    min-height: calc(100svh - 66px);
     padding: 0 0 25px;
   }
 
@@ -1584,7 +1603,7 @@ app-root {
   }
 
   .hero h1 {
-    font-size: clamp(48px, 13vw, 70px);
+    font-size: min(70px, 18cqi);
   }
 
   .hero-intro {
@@ -1597,8 +1616,9 @@ app-root {
 
   .hero-visual {
     order: 2;
+    flex: 1;
     min-height: 370px;
-    margin-left: 25px;
+    margin-left: 0;
   }
 
   .hero-bottom-mark {
@@ -1760,7 +1780,6 @@ app-root {
 
   .gallery-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: 175px;
     gap: 9px;
   }
 
@@ -1815,16 +1834,6 @@ app-root {
 }
 
 @media (max-width: 460px) {
-  .gallery-grid {
-    grid-template-columns: 1fr;
-    grid-auto-rows: 230px;
-  }
-
-  .gallery-card-featured {
-    grid-column: span 1;
-    grid-row: span 1;
-  }
-
   .gallery-count span {
     display: block;
     margin: 6px 0 0;
