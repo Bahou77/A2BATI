@@ -21,7 +21,7 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     app.galleryStatus = 'loaded';
-    app.galleryPhotos = [{ title: 'Cuisine rénovée', src: '/photos/cuisine.jpg' }];
+    app.galleryPhotos = [{ title: 'Cuisine rénovée', src: '/gallery/thumbs/cuisine.webp', full: '/gallery/full/cuisine.webp' }];
     fixture.detectChanges();
 
     const photoButton = fixture.nativeElement.querySelector('.gallery-card') as HTMLButtonElement;

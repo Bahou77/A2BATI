@@ -205,11 +205,13 @@
             class="gallery-card"
             [class.gallery-card-featured]="galleryPhotos.length > 2 && i % 5 === 0"
             type="button"
-            [attr.aria-label]="'Afficher la photo : ' + photo.title"
+            [attr.aria-label]="'Agrandir la photo : ' + (photo.title || 'réalisation A2BATI')"
             (click)="openPhoto(photo)"
           >
-            <img [src]="photo.src" [alt]="photo.title" loading="lazy">
-            <span class="gallery-card-caption"><span>{{ photo.title }}</span><i>↗</i></span>
+            <img [src]="photo.src" [alt]="photo.title || 'Réalisation A2BATI'" loading="lazy">
+            @if (photo.title) {
+              <span class="gallery-card-caption"><span>{{ photo.title }}</span><i>↗</i></span>
+            }
           </button>
         }
       </div>
@@ -218,11 +220,13 @@
   </section>
 
   @if (selectedPhoto; as photo) {
-    <div class="gallery-lightbox" role="dialog" aria-modal="true" [attr.aria-label]="photo.title" (click)="closePhoto($event)">
+    <div class="gallery-lightbox" role="dialog" aria-modal="true" [attr.aria-label]="photo.title || 'Réalisation A2BATI'" (click)="closePhoto($event)">
       <button class="lightbox-close" type="button" aria-label="Fermer la photo" (click)="selectedPhoto = null">×</button>
       <figure class="lightbox-figure">
-        <img [src]="photo.src" [alt]="photo.title">
-        <figcaption>{{ photo.title }}</figcaption>
+        <img [src]="photo.full" [alt]="photo.title || 'Réalisation A2BATI'">
+        @if (photo.title) {
+          <figcaption>{{ photo.title }}</figcaption>
+        }
       </figure>
     </div>
   }

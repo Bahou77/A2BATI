@@ -14,6 +14,7 @@ interface ProjectRequest {
 interface GalleryPhoto {
   title: string;
   src: string;
+  full: string;
 }
 
 @Component({
@@ -114,7 +115,7 @@ export class AppComponent implements OnInit {
 
   async loadGallery(): Promise<void> {
     try {
-      const response = await fetch('/photos/gallery.json');
+      const response = await fetch('/gallery/gallery.json');
       if (!response.ok) {
         throw new Error(`Gallery manifest request failed with status ${response.status}.`);
       }
@@ -155,7 +156,9 @@ export class AppComponent implements OnInit {
     }
 
     const candidate = photo as Record<string, unknown>;
-    return typeof candidate['title'] === 'string' && typeof candidate['src'] === 'string';
+    return typeof candidate['title'] === 'string'
+      && typeof candidate['src'] === 'string'
+      && typeof candidate['full'] === 'string';
   }
 
   async submitRequest(): Promise<void> {
