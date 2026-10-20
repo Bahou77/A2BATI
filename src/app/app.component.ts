@@ -224,7 +224,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const repeat = Math.ceil(MIN_CARDS_PER_LOOP / payload.reviews.length);
     const loop = Array.from({ length: repeat }, () => payload.reviews).flat();
     this.reviewsSetSize = loop.length;
-    this.reviewsDuration = Math.max(30, loop.length * 7);
+    this.reviewsDuration = Math.max(60, loop.length * 14);
     this.marqueeReviews = [...loop, ...loop];
   }
 

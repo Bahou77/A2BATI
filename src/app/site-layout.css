@@ -887,7 +887,7 @@ app-root {
 .review-item {
   flex: 0 0 min(400px, 80vw);
   display: flex;
-  margin-right: 64px;
+  margin-right: 128px;
 }
 
 .review-item > p-card {
@@ -1823,7 +1823,7 @@ app-root {
   }
 
   .review-item {
-    margin-right: 32px;
+    margin-right: 64px;
   }
 
   .renovation-gallery {
