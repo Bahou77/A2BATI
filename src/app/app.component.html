@@ -157,24 +157,43 @@
     </div>
   </section>
 
-  <section class="testimonial section-pad" id="avis">
-    <p-card styleClass="quote-card">
-      <span class="quote-mark">“</span>
-      <div class="stars" aria-label="5 étoiles sur 5">★★★★★</div>
-      <blockquote>
-        « Nous avons particulièrement apprécié d’avoir une interlocutrice unique tout au long du
-        projet. Le budget prévisionnel établi en amont a été respecté tout au long du projet. Dix
-        ans après notre emménagement, nous restons entièrement satisfaits du résultat obtenu. »
-      </blockquote>
-      <div class="quote-author"><span class="author-avatar">R</span><span><b>Roxane L.</b><small>Construction d’une maison individuelle · Avis Google</small></span></div>
-      <span class="quote-decoration">A2</span>
-    </p-card>
-    <div class="testimonial-copy">
-      <p class="eyebrow">Avis clients</p>
-      <h2>La meilleure preuve<br>reste la durée.</h2>
-      <p>Une relation de confiance, des choix assumés et un suivi qui reste satisfaisant plusieurs années après la livraison.</p>
-      <div class="review-score"><b>5.0</b><span><span class="stars">★★★★★</span><small>La confiance de nos clients</small></span></div>
+  <section class="reviews" id="avis" aria-labelledby="reviews-heading">
+    <div class="reviews-heading">
+      <div class="testimonial-copy">
+        <p class="eyebrow">Avis clients</p>
+        <h2 id="reviews-heading">La meilleure preuve<br>reste la durée.</h2>
+      </div>
+      @if (reviewsSummary; as summary) {
+        <div class="review-score">
+          <b>{{ summary.ratingLabel }}</b>
+          <span>
+            <span class="stars" aria-hidden="true">★★★★★</span>
+            <small>{{ summary.count }} avis Google</small>
+            @if (summary.url) {
+              <a [href]="summary.url" target="_blank" rel="noopener noreferrer">Voir sur Google ↗</a>
+            }
+          </span>
+        </div>
+      }
     </div>
+    @if (marqueeReviews.length > 0) {
+      <div class="reviews-marquee" role="region" aria-label="Avis Google de nos clients">
+        <div class="reviews-track" [style.animation-duration.s]="reviewsDuration">
+          @for (review of marqueeReviews; track $index) {
+            <div class="review-item" [attr.aria-hidden]="$index >= reviewsSetSize ? 'true' : null">
+              <p-card styleClass="review-card">
+                <div class="review-stars" [attr.aria-label]="review.rating + ' étoiles sur 5'">{{ stars(review.rating) }}</div>
+                <blockquote>« {{ review.text }} »</blockquote>
+                <div class="review-author">
+                  <span class="author-avatar">{{ review.author.charAt(0).toUpperCase() }}</span>
+                  <span><b>{{ review.author }}</b><small>{{ review.subtitle || 'Avis Google' }}@if (review.date) { · {{ review.date }}}</small></span>
+                </div>
+              </p-card>
+            </div>
+          }
+        </div>
+      </div>
+    }
   </section>
 
   <section class="project-gallery section-pad" id="galerie" aria-labelledby="gallery-heading">

@@ -535,9 +535,7 @@ app-root {
 }
 
 .service-card .p-card-body,
-.service-card .p-card-content,
-.quote-card .p-card-body,
-.quote-card .p-card-content {
+.service-card .p-card-content {
   height: 100%;
   padding: 0;
 }
@@ -802,58 +800,135 @@ app-root {
   color: var(--orange);
 }
 
-.testimonial {
-  display: grid;
-  grid-template-columns: 0.82fr 1.18fr;
-  align-items: center;
-  gap: 12%;
-  padding-top: 120px;
-  padding-bottom: 120px;
-}
-
-.quote-card.p-card {
-  position: relative;
-  min-height: 340px;
+.reviews {
+  padding: 120px 0;
   overflow: hidden;
-  border: 0;
-  border-radius: 15px;
-  color: #fff;
-  background: var(--ink);
-  box-shadow: none;
 }
 
-.quote-card .p-card-content {
-  position: relative;
+.reviews-heading {
   display: flex;
-  flex-direction: column;
-  padding: 34px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 46px;
+  padding: 0 max(7vw, calc((100% - 1320px) / 2));
 }
 
-.quote-mark {
-  position: absolute;
-  top: 7px;
-  right: 25px;
-  color: #30393c;
-  font-family: Georgia, serif;
-  font-size: 110px;
+.review-score {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding-bottom: 6px;
+}
+
+.review-score > b {
+  font-size: 44px;
+  letter-spacing: -0.06em;
   line-height: 1;
 }
 
+.review-stars,
 .stars {
   color: #ff9a19;
   font-size: 15px;
   letter-spacing: 0.08em;
 }
 
-.quote-card blockquote {
-  position: relative;
-  margin: 23px 0 27px;
-  font-size: 15px;
-  font-weight: 500;
+.review-score .stars {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 12px;
+}
+
+.review-score small {
+  display: block;
+  color: #81898a;
+  font-size: 10px;
+}
+
+.review-score a {
+  display: inline-block;
+  margin-top: 5px;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.review-score a:hover {
+  color: var(--orange);
+}
+
+.reviews-marquee {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+
+.reviews-track {
+  display: flex;
+  width: max-content;
+  animation: reviews-scroll 40s linear infinite;
+}
+
+.reviews-marquee:hover .reviews-track {
+  animation-play-state: paused;
+}
+
+@keyframes reviews-scroll {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.review-item {
+  flex: 0 0 min(340px, 80vw);
+  display: flex;
+  margin-right: 16px;
+}
+
+.review-item > p-card {
+  display: block;
+  width: 100%;
+}
+
+.review-card.p-card {
+  height: 100%;
+  min-height: 255px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--ink);
+  background: #faf8f5;
+  box-shadow: none;
+}
+
+.review-card .p-card-body,
+.review-card .p-card-content {
+  height: 100%;
+  padding: 0;
+}
+
+.review-card .p-card-content {
+  display: flex;
+  flex-direction: column;
+  padding: 26px;
+}
+
+.review-card blockquote {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 7;
+  overflow: hidden;
+  margin: 16px 0 22px;
+  color: #3f4749;
+  font-size: 13px;
   line-height: 1.75;
 }
 
-.quote-author {
+.review-author {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -863,75 +938,47 @@ app-root {
 .author-avatar {
   width: 36px;
   height: 36px;
+  flex: none;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  color: var(--ink);
-  background: #f6f2ec;
+  color: #fff;
+  background: var(--orange);
   font-size: 13px;
   font-weight: 700;
 }
 
-.quote-author b,
-.quote-author small,
-.review-score small {
+.review-author b,
+.review-author small {
   display: block;
 }
 
-.quote-author b {
-  margin-bottom: 4px;
-  font-size: 11px;
+.review-author b {
+  margin-bottom: 3px;
+  font-size: 12px;
 }
 
-.quote-author small {
-  color: #aab1b2;
-  font-size: 9px;
-}
-
-.quote-decoration {
-  position: absolute;
-  right: 27px;
-  bottom: 18px;
-  color: #3a4346;
-  font-size: 24px;
-  font-weight: 850;
-  letter-spacing: -0.08em;
+.review-author small {
+  color: #7a8283;
+  font-size: 10px;
 }
 
 .testimonial-copy h2 {
   font-size: clamp(40px, 5vw, 64px);
 }
 
-.testimonial-copy > p:not(.eyebrow) {
-  max-width: 485px;
-  margin: 20px 0 25px;
-  color: #687071;
-  font-size: 14px;
-  line-height: 1.8;
-}
+@media (prefers-reduced-motion: reduce) {
+  .reviews-marquee {
+    overflow-x: auto;
+  }
 
-.review-score {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding-top: 21px;
-  border-top: 1px solid var(--line);
-}
+  .reviews-track {
+    animation: none;
+  }
 
-.review-score > b {
-  font-size: 35px;
-  letter-spacing: -0.06em;
-}
-
-.review-score .stars {
-  display: block;
-  margin-bottom: 3px;
-  font-size: 11px;
-}
-
-.review-score small {
-  color: #81898a;
-  font-size: 9px;
+  .review-item[aria-hidden="true"] {
+    display: none;
+  }
 }
 
 .project-gallery {
@@ -1506,6 +1553,10 @@ app-root {
     padding-left: 6vw;
   }
 
+  .reviews-heading {
+    padding: 0 6vw;
+  }
+
   .approach {
     gap: 7%;
   }
@@ -1641,7 +1692,6 @@ app-root {
   }
 
   .approach,
-  .testimonial,
   .service-area,
   .contact-section {
     grid-template-columns: 1fr;
@@ -1757,16 +1807,26 @@ app-root {
     height: 230px;
   }
 
-  .testimonial {
-    gap: 34px;
+  .reviews {
+    padding: 76px 0;
   }
 
-  .quote-card .p-card-content {
-    padding: 26px;
+  .reviews-heading {
+    display: block;
+    margin-bottom: 32px;
+    padding: 0 24px;
   }
 
-  .quote-card blockquote {
-    font-size: 13px;
+  .review-score {
+    margin-top: 22px;
+  }
+
+  .review-card.p-card {
+    min-height: 240px;
+  }
+
+  .review-item {
+    margin-right: 12px;
   }
 
   .renovation-gallery {

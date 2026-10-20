@@ -17,6 +17,29 @@ interface GalleryPhoto {
   full: string;
 }
 
+interface Review {
+  author: string;
+  rating: number;
+  text: string;
+  date?: string;
+  subtitle?: string;
+}
+
+interface ReviewsPayload {
+  rating?: number;
+  count?: number;
+  url?: string;
+  reviews: Review[];
+}
+
+interface ReviewsSummary {
+  ratingLabel: string;
+  count: number;
+  url?: string;
+}
+
+const MIN_CARDS_PER_LOOP = 6;
+
 const GALLERY_SIZE = 6;
 const ONE_HOUR_MS = 60 * 60 * 1000;
 
@@ -53,6 +76,10 @@ export class AppComponent implements OnInit, OnDestroy {
   galleryPhotos: GalleryPhoto[] = [];
   galleryStatus: 'loading' | 'loaded' | 'error' = 'loading';
   selectedPhoto: GalleryPhoto | null = null;
+  marqueeReviews: Review[] = [];
+  reviewsSetSize = 0;
+  reviewsDuration = 40;
+  reviewsSummary: ReviewsSummary | null = null;
   private allPhotos: GalleryPhoto[] = [];
   private galleryTimer?: ReturnType<typeof setTimeout>;
 
@@ -120,6 +147,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     void this.loadGallery();
+    void this.loadReviews();
   }
 
   ngOnDestroy(): void {
@@ -170,6 +198,65 @@ export class AppComponent implements OnInit, OnDestroy {
     clearTimeout(this.galleryTimer);
     const msUntilNextHour = ONE_HOUR_MS - (now % ONE_HOUR_MS);
     this.galleryTimer = setTimeout(() => this.refreshGallery(), msUntilNextHour + 1000);
+  }
+
+  stars(rating: number): string {
+    const filled = Math.max(0, Math.min(5, Math.round(rating)));
+    return '★'.repeat(filled) + '☆'.repeat(5 - filled);
+  }
+
+  async loadReviews(): Promise<void> {
+    // Avis en direct via la fonction Netlify, sinon fichier public/reviews.json.
+    const live = await this.fetchReviews('/.netlify/functions/google-reviews');
+    const payload = live ?? await this.fetchReviews('/reviews.json');
+
+    if (!payload || payload.reviews.length === 0) {
+      return;
+    }
+
+    if (live && live.rating !== undefined && live.count !== undefined) {
+      this.reviewsSummary = {
+        ratingLabel: live.rating.toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+        count: live.count,
+        url: live.url
+      };
+    }
+
+    const repeat = Math.ceil(MIN_CARDS_PER_LOOP / payload.reviews.length);
+    const loop = Array.from({ length: repeat }, () => payload.reviews).flat();
+    this.reviewsSetSize = loop.length;
+    this.reviewsDuration = Math.max(30, loop.length * 7);
+    this.marqueeReviews = [...loop, ...loop];
+  }
+
+  private async fetchReviews(url: string): Promise<ReviewsPayload | null> {
+    try {
+      const response = await fetch(url);
+      const isJson = response.headers.get('content-type')?.includes('json') ?? false;
+      if (!response.ok || !isJson) {
+        return null;
+      }
+
+      const payload: unknown = await response.json();
+      return this.isReviewsPayload(payload) ? payload : null;
+    } catch (error) {
+      console.error(`Unable to load reviews from ${url}.`, error);
+      return null;
+    }
+  }
+
+  private isReviewsPayload(payload: unknown): payload is ReviewsPayload {
+    if (typeof payload !== 'object' || payload === null) {
+      return false;
+    }
+
+    const candidate = payload as Record<string, unknown>;
+    return Array.isArray(candidate['reviews']) && candidate['reviews'].every(review =>
+      typeof review === 'object' && review !== null
+      && typeof (review as Record<string, unknown>)['author'] === 'string'
+      && typeof (review as Record<string, unknown>)['rating'] === 'number'
+      && typeof (review as Record<string, unknown>)['text'] === 'string'
+    );
   }
 
   openPhoto(photo: GalleryPhoto): void {
