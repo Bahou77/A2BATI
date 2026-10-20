@@ -33,6 +33,7 @@ interface ReviewsPayload {
 }
 
 interface ReviewsSummary {
+  rating: number;
   ratingLabel: string;
   count: number;
   url?: string;
@@ -213,13 +214,14 @@ export class AppComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (payload.rating !== undefined && payload.count !== undefined) {
-      this.reviewsSummary = {
-        ratingLabel: payload.rating.toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
-        count: payload.count,
-        url: payload.url
-      };
-    }
+    const average = payload.reviews.reduce((sum, review) => sum + review.rating, 0) / payload.reviews.length;
+    const rating = payload.rating ?? average;
+    this.reviewsSummary = {
+      rating,
+      ratingLabel: rating.toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+      count: payload.count ?? payload.reviews.length,
+      url: payload.url
+    };
 
     const repeat = Math.ceil(MIN_CARDS_PER_LOOP / payload.reviews.length);
     const loop = Array.from({ length: repeat }, () => payload.reviews).flat();

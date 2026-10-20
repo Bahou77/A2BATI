@@ -163,18 +163,6 @@
         <p class="eyebrow">Avis clients</p>
         <h2 id="reviews-heading">La meilleure preuve<br>reste la durée.</h2>
       </div>
-      @if (reviewsSummary; as summary) {
-        <div class="review-score">
-          <b>{{ summary.ratingLabel }}</b>
-          <span>
-            <span class="stars" aria-hidden="true">★★★★★</span>
-            <small>{{ summary.count }} avis Google</small>
-            @if (summary.url) {
-              <a [href]="summary.url" target="_blank" rel="noopener noreferrer">Voir sur Google ↗</a>
-            }
-          </span>
-        </div>
-      }
     </div>
     @if (marqueeReviews.length > 0) {
       <div class="reviews-marquee" role="region" aria-label="Avis Google de nos clients">
@@ -192,6 +180,18 @@
             </div>
           }
         </div>
+      </div>
+    }
+    @if (reviewsSummary; as summary) {
+      <div class="review-score" role="group" [attr.aria-label]="'Note moyenne : ' + summary.ratingLabel + ' sur 5'">
+        <b>{{ summary.ratingLabel }}<small>/5</small></b>
+        <span>
+          <span class="stars" aria-hidden="true">{{ stars(summary.rating) }}</span>
+          <span class="review-score-count">Moyenne de {{ summary.count }} avis Google</span>
+          @if (summary.url) {
+            <a [href]="summary.url" target="_blank" rel="noopener noreferrer">Voir sur Google ↗</a>
+          }
+        </span>
       </div>
     }
   </section>
