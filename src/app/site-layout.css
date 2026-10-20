@@ -96,6 +96,17 @@ app-root {
   font-size: 12px;
   font-weight: 700;
   text-decoration: none;
+  transition: background-color 180ms ease;
+}
+
+.nav-cta.p-button:hover:not(:disabled) {
+  border: 0;
+  color: #fff;
+  background: var(--orange);
+}
+
+.nav-cta.p-button:hover span {
+  color: #fff;
 }
 
 .nav-cta span {
@@ -219,8 +230,9 @@ app-root {
   background: #fff;
 }
 
-.button-light.p-button:hover {
+.button-light.p-button:hover:not(:disabled) {
   border-color: var(--ink);
+  color: var(--ink);
   background: #fff;
 }
 
