@@ -4,17 +4,22 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 ## Avis Google
 
-La section « Avis clients » défile automatiquement. Ses données viennent de deux sources :
+La section « Avis clients » défile automatiquement. Les avis sont saisis à la main dans `public/reviews.json` :
 
-1. **En direct depuis Google** : la fonction `netlify/functions/google-reviews.mjs` interroge l'API Google Places.
-   Elle s'active dès que ces deux variables d'environnement sont définies dans Netlify
-   (*Project configuration → Environment variables*), puis après un redéploiement :
-   - `GOOGLE_PLACES_API_KEY` : clé API Google Cloud (Places API (New) activée, restreinte à cette API).
-   - `GOOGLE_PLACE_ID` : identifiant de la fiche Google de l'entreprise.
+```json
+{
+  "rating": 4.9,
+  "count": 12,
+  "url": "https://g.page/...",
+  "reviews": [
+    { "author": "Marie D.", "rating": 5, "text": "Texte de l'avis", "date": "il y a 2 mois", "subtitle": "Rénovation · Avis Google" }
+  ]
+}
+```
 
-   L'API ne renvoie que 5 avis au maximum. La réponse est mise en cache 24 h côté Netlify.
-2. **Fichier de secours** : `public/reviews.json`, utilisé si la fonction n'est pas configurée ou en cas d'erreur.
-   Il peut contenir les avis saisis à la main (`author`, `rating`, `text`, et éventuellement `date` et `subtitle`).
+- `reviews` est obligatoire ; `author`, `rating` (1 à 5) et `text` sont obligatoires pour chaque avis.
+- `date` et `subtitle` sont facultatifs. Sans `subtitle`, « Avis Google » est affiché.
+- `rating`, `count` et `url` sont facultatifs : s'ils sont tous renseignés, la note moyenne et le lien vers Google s'affichent à droite du titre.
 
 ## Development server
 

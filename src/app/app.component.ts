@@ -206,19 +206,18 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   async loadReviews(): Promise<void> {
-    // Avis en direct via la fonction Netlify, sinon fichier public/reviews.json.
-    const live = await this.fetchReviews('/.netlify/functions/google-reviews');
-    const payload = live ?? await this.fetchReviews('/reviews.json');
+    // Les avis sont saisis à la main dans public/reviews.json.
+    const payload = await this.fetchReviews('/reviews.json');
 
     if (!payload || payload.reviews.length === 0) {
       return;
     }
 
-    if (live && live.rating !== undefined && live.count !== undefined) {
+    if (payload.rating !== undefined && payload.count !== undefined) {
       this.reviewsSummary = {
-        ratingLabel: live.rating.toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
-        count: live.count,
-        url: live.url
+        ratingLabel: payload.rating.toLocaleString('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
+        count: payload.count,
+        url: payload.url
       };
     }
 

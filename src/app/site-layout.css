@@ -887,16 +887,16 @@ app-root {
 .review-item {
   flex: 0 0 min(340px, 80vw);
   display: flex;
-  margin-right: 16px;
+  margin-right: 36px;
 }
 
 .review-item > p-card {
-  display: block;
+  display: flex;
   width: 100%;
 }
 
 .review-card.p-card {
-  height: 100%;
+  flex: 1;
   min-height: 255px;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -918,14 +918,11 @@ app-root {
 }
 
 .review-card blockquote {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 7;
-  overflow: hidden;
   margin: 16px 0 22px;
   color: #3f4749;
   font-size: 13px;
   line-height: 1.75;
+  white-space: pre-line;
 }
 
 .review-author {
@@ -1826,7 +1823,7 @@ app-root {
   }
 
   .review-item {
-    margin-right: 12px;
+    margin-right: 22px;
   }
 
   .renovation-gallery {
