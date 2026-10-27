@@ -77,6 +77,12 @@ export class AppComponent implements OnInit, OnDestroy {
   galleryPhotos: GalleryPhoto[] = [];
   galleryStatus: 'loading' | 'loaded' | 'error' = 'loading';
   selectedPhoto: GalleryPhoto | null = null;
+
+  readonly businessCard: GalleryPhoto = {
+    title: 'Carte de visite d’Alexandra Barthe — scannez le QR code avec l’appareil photo de votre téléphone',
+    src: '/carte-visite-miniature.webp',
+    full: '/carte-visite.webp'
+  };
   marqueeReviews: Review[] = [];
   reviewsSetSize = 0;
   reviewsDuration = 40;
@@ -270,6 +276,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   openPhoto(photo: GalleryPhoto): void {
     this.selectedPhoto = photo;
+  }
+
+  openBusinessCard(): void {
+    this.selectedPhoto = this.businessCard;
   }
 
   closePhoto(event?: MouseEvent): void {

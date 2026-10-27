@@ -57,6 +57,23 @@ describe('AppComponent', () => {
     expect(fixture.nativeElement.querySelector('[role="dialog"]')).toBeNull();
   });
 
+  it('should enlarge the business card from the footer', () => {
+    spyOn(window, 'fetch').and.resolveTo(new Response('[]', { status: 200 }));
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+
+    const cardButton = fixture.nativeElement.querySelector('.footer-card') as HTMLButtonElement;
+    cardButton.click();
+    fixture.detectChanges();
+
+    const image = fixture.nativeElement.querySelector('.lightbox-figure img') as HTMLImageElement;
+    expect(image.getAttribute('src')).toBe('/carte-visite.webp');
+
+    fixture.componentInstance.onDocumentKeydown(new KeyboardEvent('keydown', { key: 'Escape' }));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="dialog"]')).toBeNull();
+  });
+
   it('should toggle the phone number inside the call button', () => {
     spyOn(window, 'fetch').and.resolveTo(new Response('[]', { status: 200 }));
     const fixture = TestBed.createComponent(AppComponent);
