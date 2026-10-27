@@ -638,7 +638,7 @@ app-root {
   box-shadow: none;
 }
 
-.stage-card.stage-wide {
+.stage-grid > .stage-wide {
   grid-column: span 2;
 }
 
@@ -1787,7 +1787,7 @@ app-root {
     height: 180px;
   }
 
-  .stage-card.stage-wide {
+  .stage-grid > .stage-wide {
     grid-column: span 2;
   }
 

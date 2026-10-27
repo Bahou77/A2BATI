@@ -52,8 +52,8 @@
     </div>
     <div class="hero-visual">
       <img
-        [src]="imageUrl('photo-1572331165267-854da2b10ccc', 1500)"
-        alt="Piscine et maison contemporaine, un projet d’aménagement extérieur"
+        [src]="sitePhotoUrl(sitePhotos.hero, 'full')"
+        alt="Maison contemporaine avec piscine, un projet livré par A2BATI"
         fetchpriority="high"
       >
       <div class="image-caption"><span class="caption-line"></span><span>Un projet bien mené, jusque dans les détails.</span></div>
@@ -65,8 +65,8 @@
   <section class="approach section-pad">
     <div class="approach-visual">
       <img
-        [src]="imageUrl('photo-1600607687939-ce8a6c25118c', 1000)"
-        alt="Intérieur lumineux conçu avec soin"
+        [src]="sitePhotoUrl(sitePhotos.approach, 'full')"
+        alt="Escalier hélicoïdal dans un intérieur lumineux rénové"
         loading="lazy"
       >
       <div class="approach-tag"><span class="tag-icon">✳</span><span>Un projet clair.<br>Un chantier maîtrisé.</span></div>
@@ -126,7 +126,7 @@
     <div class="stage-grid">
       @for (stage of stages; track stage.number; let i = $index) {
         <p-card styleClass="stage-card" [class.stage-wide]="i === 7">
-          <img [src]="imageUrl(stage.image, i === 7 ? 1400 : 700)" [alt]="stage.title" loading="lazy">
+          <img [src]="sitePhotoUrl(stage.image, i === 7 ? 'full' : 'thumbs')" [alt]="stage.title" loading="lazy">
           <span class="stage-label"><b>{{ stage.number }}</b><i>—</i>{{ stage.title }} <span class="stage-label-arrow">↗</span></span>
         </p-card>
       }
@@ -142,14 +142,14 @@
         <div class="renovation-cards">
           @for (step of renovationSteps; track step.title) {
             <p-card styleClass="renovation-card">
-              <img [src]="imageUrl(step.image, 650)" [alt]="step.title" loading="lazy">
+              <img [src]="sitePhotoUrl(step.image)" [alt]="step.title" loading="lazy">
               <span>{{ step.title }} <b>↗</b></span>
             </p-card>
           }
         </div>
       </div>
       <aside class="renovation-aside">
-        <img [src]="imageUrl('photo-1600566753086-00f18fb6b3ea', 900)" alt="Détail soigné d’un espace rénové" loading="lazy">
+        <img [src]="sitePhotoUrl(sitePhotos.onSite)" alt="Charpente et gaines techniques sur un chantier suivi par A2BATI" loading="lazy">
         <p class="eyebrow">Sur le terrain</p>
         <p>Une présence régulière sur chantier pour suivre les décisions, anticiper les points sensibles et faciliter les échanges avec les entreprises.</p>
         <a href="#contact" aria-label="Parler de votre projet de rénovation">Parlons de votre projet <span>↗</span></a>

@@ -1,4 +1,5 @@
-import { mkdir, readdir, rm, stat, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
@@ -10,8 +11,8 @@ const thumbsDirectory = path.join(outputDirectory, 'thumbs');
 const fullDirectory = path.join(outputDirectory, 'full');
 const manifestPath = path.join(outputDirectory, 'gallery.json');
 const imageExtensions = new Set(['.avif', '.gif', '.jpeg', '.jpg', '.png', '.webp']);
-// Noms issus d'un appareil photo (IMG_2024..., 10, DSC0001) : pas de légende utile.
-const genericName = /^(img|dsc|dscn|pxl|photo|image)?[\s_-]*[\d\s_-]+(\(\d+\))?$/i;
+// Noms issus d'un appareil photo ou de WhatsApp (IMG_2024..., WhatsApp Image 2026-10-27 at 11.41.57 (1)) : pas de légende utile.
+const genericName = /^(whatsapp[\s_-]*image|img|dsc|dscn|pxl|photo|image)?[\s_-]*[\d\s_.\-()]*(at[\s_-]*[\d\s_.\-()]*)?$/i;
 
 async function findPhotos(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -53,10 +54,22 @@ const sourceFiles = (await findPhotos(sourceDirectory))
   .sort((a, b) => a.localeCompare(b, 'fr', { numeric: true, sensitivity: 'base' }));
 const photos = [];
 const keptNames = new Set();
+const seenContent = new Map();
 let converted = 0;
+let duplicates = 0;
 
 for (const sourceFile of sourceFiles) {
   const relativePath = path.relative(sourceDirectory, sourceFile);
+
+  // Une photo déposée en double (même contenu) n'est affichée qu'une fois.
+  const contentHash = createHash('sha1').update(await readFile(sourceFile)).digest('hex');
+  if (seenContent.has(contentHash)) {
+    duplicates += 1;
+    console.log(`Doublon ignoré : ${relativePath} (identique à ${seenContent.get(contentHash)})`);
+    continue;
+  }
+  seenContent.set(contentHash, relativePath);
+
   const id = relativePath.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const fileName = `${id}.webp`;
   const thumbPath = path.join(thumbsDirectory, fileName);
@@ -91,4 +104,4 @@ for (const sourceFile of sourceFiles) {
 await removeOrphans(thumbsDirectory, keptNames);
 await removeOrphans(fullDirectory, keptNames);
 await writeFile(manifestPath, `${JSON.stringify(photos, null, 2)}\n`, 'utf8');
-console.log(`Galerie mise à jour : ${photos.length} photo(s), ${converted} optimisée(s).`);
+console.log(`Galerie mise à jour : ${photos.length} photo(s), ${converted} optimisée(s), ${duplicates} doublon(s) ignoré(s).`);

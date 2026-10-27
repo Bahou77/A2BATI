@@ -115,22 +115,30 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   ];
 
+  // Photos choisies pour les sections du site : identifiant = nom du fichier de public/photos
+  // en minuscules, avec les caractères spéciaux remplacés par des tirets.
+  readonly sitePhotos = {
+    hero: 'whatsapp-image-2026-10-27-at-11-44-31-jpeg',
+    approach: 'whatsapp-image-2026-10-27-at-11-44-49-jpeg',
+    onSite: 'whatsapp-image-2026-10-27-at-11-45-02-jpeg'
+  };
+
   readonly stages = [
-    { number: '01', title: 'Préparation du terrain', image: 'photo-1500382017468-9049fed747ef' },
-    { number: '02', title: 'Terrassement & réseaux', image: 'photo-1504307651254-35680f356dfd' },
-    { number: '03', title: 'Fondations', image: 'photo-1517581177682-a085bb7ffb15' },
-    { number: '04', title: 'Plancher & réservation', image: 'photo-1503387762-592deb58ef4e' },
-    { number: '05', title: 'Élévation', image: 'photo-1600607687939-ce8a6c25118c' },
-    { number: '06', title: 'Clos couvert', image: 'photo-1600585154340-be6161a56a0c' },
-    { number: '07', title: 'Aménagement extérieur', image: 'photo-1600566753086-00f18fb6b3ea' },
-    { number: '08', title: 'Projet livré', image: 'photo-1600607687920-4e2a09cf159d' }
+    { number: '01', title: 'Préparation du terrain', image: 'whatsapp-image-2026-10-27-at-11-42-39-2-jpeg' },
+    { number: '02', title: 'Terrassement & réseaux', image: 'whatsapp-image-2026-10-27-at-11-41-57-jpeg' },
+    { number: '03', title: 'Fondations', image: 'whatsapp-image-2026-10-27-at-11-44-05-jpeg' },
+    { number: '04', title: 'Plancher & réservation', image: 'whatsapp-image-2026-10-27-at-11-44-34-2-jpeg' },
+    { number: '05', title: 'Élévation', image: 'whatsapp-image-2026-10-27-at-12-25-43-jpeg' },
+    { number: '06', title: 'Clos couvert', image: 'whatsapp-image-2026-10-27-at-11-44-48-4-jpeg' },
+    { number: '07', title: 'Aménagement extérieur', image: 'whatsapp-image-2026-10-27-at-11-44-48-1-jpeg' },
+    { number: '08', title: 'Projet livré', image: 'whatsapp-image-2026-10-27-at-11-44-48-5-jpeg' }
   ];
 
   readonly renovationSteps = [
-    { title: 'Avant — lecture de l’existant', image: 'photo-1600210492486-724fe5c67fb0' },
-    { title: 'Ouvertures & structure', image: 'photo-1600607687939-ce8a6c25118c' },
-    { title: 'Second œuvre & isolation', image: 'photo-1600607687920-4e2a09cf159d' },
-    { title: 'Finitions & détails', image: 'photo-1600566753086-00f18fb6b3ea' }
+    { title: 'Avant — lecture de l’existant', image: 'whatsapp-image-2026-10-27-at-11-43-34-13-jpeg' },
+    { title: 'Ouvertures & structure', image: 'whatsapp-image-2026-10-27-at-11-43-34-15-jpeg' },
+    { title: 'Second œuvre & isolation', image: 'whatsapp-image-2026-10-27-at-12-26-34-jpeg' },
+    { title: 'Finitions & détails', image: 'whatsapp-image-2026-10-27-at-11-43-34-6-jpeg' }
   ];
 
   readonly towns = [
@@ -167,8 +175,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this.showPhoneNumber = !this.showPhoneNumber;
   }
 
-  imageUrl(photoId: string, width = 900): string {
-    return `https://images.unsplash.com/${photoId}?auto=format&fit=crop&w=${width}&q=85`;
+  sitePhotoUrl(id: string, size: 'thumbs' | 'full' = 'thumbs'): string {
+    return `/gallery/${size}/${id}.webp`;
   }
 
   async loadGallery(): Promise<void> {
