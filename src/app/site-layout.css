@@ -51,15 +51,9 @@ app-root {
 .brand-mark {
   width: 34px;
   height: 34px;
-  display: grid;
-  place-items: center;
+  display: block;
+  flex: none;
   border-radius: 50%;
-  color: #fff;
-  background: var(--orange);
-  font-size: 24px;
-  font-weight: 800;
-  font-style: italic;
-  line-height: 1;
 }
 
 .main-nav {
@@ -1538,7 +1532,6 @@ app-root {
 .footer-brand .brand-mark {
   width: 30px;
   height: 30px;
-  font-size: 20px;
 }
 
 .back-top {
