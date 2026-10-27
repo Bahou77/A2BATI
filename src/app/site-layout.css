@@ -120,7 +120,7 @@ app-root {
   display: grid;
   grid-template-columns: 0.94fr 1.06fr;
   align-items: stretch;
-  padding: 38px 0 50px 7vw;
+  padding: 38px 0 50px max(7vw, calc((100% - 1320px) / 2));
   overflow: hidden;
   background: var(--cream);
 }
@@ -354,7 +354,7 @@ app-root {
 .hero-bottom-mark {
   position: absolute;
   bottom: 21px;
-  left: 7vw;
+  left: max(7vw, calc((100% - 1320px) / 2));
   color: #858b8b;
   font-size: 8px;
   font-weight: 700;
@@ -1559,7 +1559,11 @@ app-root {
 
   .hero {
     min-height: max(600px, calc(100svh - 76px));
-    padding-left: 5vw;
+    padding-left: 6vw;
+  }
+
+  .hero-bottom-mark {
+    left: 6vw;
   }
 
   .hero-copy {
@@ -1672,7 +1676,7 @@ app-root {
 
   .hero-copy {
     order: 1;
-    padding: 49px 25px 32px;
+    padding: 49px 24px 32px;
   }
 
   .hero h1 {
